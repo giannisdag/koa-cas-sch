@@ -4,6 +4,7 @@ const url = require('url'),
   parseXML = require('xml2js').parseString,
   XMLprocessors = require('xml2js/lib/processors')
 
+ const post_data = null;
 /**
  * The CAS authentication types.
  * @enum {number}
@@ -120,6 +121,7 @@ module.exports = class Cas {
             }
             try {
               var samlResponse = result.envelope.body.response
+              console.log(JSON.stringify(samlResponse.assertion.attributestatement));
               var success = samlResponse.status.statuscode.$.Value.split(':')[1]
               if (success !== 'Success') {
                 return callback(
@@ -127,7 +129,10 @@ module.exports = class Cas {
                 )
               } else {
                 var attributes = {}
-                var attributesArray = samlResponse.assertion.attributestatement.attribute
+                const atrributeStatement = samlResponse.assertion.attributestatement;
+                console.log(JSON.stringify(atrributeStatement[0].attribute));
+                var attributesArray = atrributeStatement[0].attribute
+                console.log(JSON.stringify(attributesArray));
                 if (!(attributesArray instanceof Array)) {
                   attributesArray = [attributesArray]
                 }
@@ -306,6 +311,7 @@ const _request = function (requestOptions) {
     const request = this.request_client.request(requestOptions, response => {
       response.setEncoding('utf8')
       var body = ''
+      console.log(requestOptions);
       response.on('data', chunk => {
         return (body += chunk)
       })
@@ -349,15 +355,15 @@ async function _handleTicket(ctx, next) {
     })
   } else if (this.cas_version === 'saml1.1') {
     var now = new Date()
-    var post_data = '<?xml version="1.0" encoding="utf-8"?>\n' +
+    post_data = '<?xml version="1.0" encoding="utf-8"?>\n' +
       '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">\n' +
       '  <SOAP-ENV:Header/>\n' +
       '  <SOAP-ENV:Body>\n' +
       '    <samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol" MajorVersion="1"\n' +
-      '      MinorVersion="1" RequestID="_' + req.host + '.' + now.getTime() + '"\n' +
+      '      MinorVersion="1" RequestID="_' + ctx.host + '.' + now.getTime() + '"\n' +
       '      IssueInstant="' + now.toISOString() + '">\n' +
       '      <samlp:AssertionArtifact>\n' +
-      '        ' + req.query.ticket + '\n' +
+      '        ' + ctx.query.ticket + '\n' +
       '      </samlp:AssertionArtifact>\n' +
       '    </samlp:Request>\n' +
       '  </SOAP-ENV:Body>\n' +
