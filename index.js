@@ -4,7 +4,7 @@ const url = require('url'),
   parseXML = require('xml2js').parseString,
   XMLprocessors = require('xml2js/lib/processors')
 
- const post_data = null;
+ var post_data = null;
 /**
  * The CAS authentication types.
  * @enum {number}
