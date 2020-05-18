@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Donny2333/koa2-sso.git"
+    "url": "https://github.com/giannisdag/koa2-cas-sch.git"
   },
   "keywords": [
     "koa",
