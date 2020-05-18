@@ -1,6 +1,6 @@
 {
-  "name": "koa2-cas",
-  "version": "1.0.5",
+  "name": "koa-cas-sch",
+  "version": "1.0.0",
   "description": "koa cas middleware",
   "main": "index.js",
   "scripts": {
